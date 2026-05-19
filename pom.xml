@@ -45,10 +45,10 @@
       <artifactId>vertx-launcher-application</artifactId>
     </dependency>
 <!-- Version is managed by vertx-stack-depchain in dependencyManagement -->
-<dependency>
-  <groupId>io.vertx</groupId>
-  <artifactId>vertx-web</artifactId>
-</dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-junit5</artifactId>

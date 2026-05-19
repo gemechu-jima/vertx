@@ -2,17 +2,136 @@ package com.example.starter;
 
 import io.vertx.core.Future;
 import io.vertx.core.VerticleBase;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainVerticle extends VerticleBase {
 
+  private Map<Integer, JsonObject> items = new HashMap<>();
+  private AtomicInteger idCounter = new AtomicInteger(1);
+
   @Override
   public Future<?> start() {
-    return vertx.createHttpServer().requestHandler(req -> {
-      req.response()
-        .putHeader("content-type", "text/plain")
-        .end("Hello from Vert.x!");
-    }).listen(8888).onSuccess(http -> {
-      System.out.println("HTTP server started on port 8888");
+    addSampleData();
+    
+    Router router = Router.router(vertx);
+
+    // CRUD routes
+    router.get("/items").handler(this::listItems);
+    router.get("/items/:id").handler(this::getItem);
+    router.post("/items").handler(this::createItem);
+    router.put("/items/:id").handler(this::updateItem);
+    router.delete("/items/:id").handler(this::deleteItem);
+
+    return vertx.createHttpServer()
+      .requestHandler(router)
+      .listen(8888)
+      .onSuccess(server -> {
+        System.out.println("HTTP server started on port " + server.actualPort());
+      });
+  }
+
+  // LIST all items
+  private void listItems(RoutingContext ctx) {
+    JsonArray itemsArray = new JsonArray();
+    items.values().forEach(itemsArray::add);
+    
+    ctx.response()
+      .putHeader("content-type", "application/json")
+      .end(itemsArray.encodePrettily());
+  }
+
+  // READ one item
+  private void getItem(RoutingContext ctx) {
+    try {
+      int id = Integer.parseInt(ctx.pathParam("id"));
+      JsonObject item = items.get(id);
+      
+      if (item != null) {
+        ctx.response()
+          .putHeader("content-type", "application/json")
+          .end(item.encodePrettily());
+      } else {
+        ctx.response().setStatusCode(404).end("Item not found");
+      }
+    } catch (NumberFormatException e) {
+      ctx.response().setStatusCode(400).end("Invalid ID");
+    }
+  }
+
+  // CREATE new item
+  private void createItem(RoutingContext ctx) {
+    ctx.request().bodyHandler(buffer -> {
+      try {
+        JsonObject body = new JsonObject(buffer.toString());
+        int id = idCounter.getAndIncrement();
+        JsonObject item = new JsonObject()
+          .put("id", id)
+          .put("name", body.getString("name"))
+          .put("description", body.getString("description"));
+        
+        items.put(id, item);
+        
+        ctx.response()
+          .setStatusCode(201)
+          .putHeader("content-type", "application/json")
+          .end(item.encodePrettily());
+      } catch (Exception e) {
+        ctx.response().setStatusCode(400).end("Invalid JSON");
+      }
     });
+  }
+
+  // UPDATE item
+  private void updateItem(RoutingContext ctx) {
+    ctx.request().bodyHandler(buffer -> {
+      try {
+        int id = Integer.parseInt(ctx.pathParam("id"));
+        JsonObject item = items.get(id);
+        
+        if (item != null) {
+          JsonObject body = new JsonObject(buffer.toString());
+          item.put("name", body.getString("name", item.getString("name")));
+          item.put("description", body.getString("description", item.getString("description")));
+          
+          ctx.response()
+            .putHeader("content-type", "application/json")
+            .end(item.encodePrettily());
+        } else {
+          ctx.response().setStatusCode(404).end("Item not found");
+        }
+      } catch (Exception e) {
+        ctx.response().setStatusCode(400).end("Invalid request");
+      }
+    });
+  }
+
+  // DELETE item
+  private void deleteItem(RoutingContext ctx) {
+    try {
+      int id = Integer.parseInt(ctx.pathParam("id"));
+      JsonObject deleted = items.remove(id);
+      
+      if (deleted != null) {
+        ctx.response()
+          .putHeader("content-type", "application/json")
+          .end(new JsonObject().put("message", "Item deleted").encodePrettily());
+      } else {
+        ctx.response().setStatusCode(404).end("Item not found");
+      }
+    } catch (NumberFormatException e) {
+      ctx.response().setStatusCode(400).end("Invalid ID");
+    }
+  }
+
+  private void addSampleData() {
+    items.put(1, new JsonObject().put("id", 1).put("name", "Item 1").put("description", "First item"));
+    items.put(2, new JsonObject().put("id", 2).put("name", "Item 2").put("description", "Second item"));
+    idCounter.set(3);
   }
 }
