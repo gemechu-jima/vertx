@@ -21,6 +21,20 @@ public class MainVerticle extends VerticleBase {
     
     Router router = Router.router(vertx);
 
+    // Enable CORS for Angular frontend
+    router.route().handler(ctx -> {
+      ctx.response()
+        .putHeader("Access-Control-Allow-Origin", "*")
+        .putHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        .putHeader("Access-Control-Allow-Headers", "Content-Type");
+      
+      if (ctx.request().method().name().equals("OPTIONS")) {
+        ctx.response().setStatusCode(200).end();
+      } else {
+        ctx.next();
+      }
+    });
+
     // CRUD routes
     router.get("/items").handler(this::listItems);
     router.get("/items/:id").handler(this::getItem);

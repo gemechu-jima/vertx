@@ -1,0 +1,49 @@
+<div class="container">
+  <h1>{{ title }}</h1>
+
+  <div class="add-item-form">
+    <h2>Add New Item</h2>
+    <input 
+      [(ngModel)]="newItem.name" 
+      placeholder="Item name" 
+      type="text"
+    />
+    <input 
+      [(ngModel)]="newItem.description" 
+      placeholder="Item description" 
+      type="text"
+    />
+    <button (click)="addItem()">Add Item</button>
+  </div>
+
+  <div class="items-list">
+    <h2>Items</h2>
+    <div *ngIf="loading" class="loading">Loading items...</div>
+    <div *ngIf="!loading && items.length === 0" class="no-items">No items found</div>
+    
+    <div *ngFor="let item of items" class="item-card">
+      <div *ngIf="editingItem?.id !== item.id">
+        <h3>{{ item.name }}</h3>
+        <p>{{ item.description }}</p>
+        <p class="item-id">ID: {{ item.id }}</p>
+        <button (click)="editItem(item)" class="edit-btn">Edit</button>
+        <button (click)="deleteItem(item.id)" class="delete-btn">Delete</button>
+      </div>
+
+      <div *ngIf="editingItem?.id === item.id" class="edit-form">
+        <input 
+          [(ngModel)]="editingItem.name" 
+          placeholder="Item name"
+          type="text"
+        />
+        <input 
+          [(ngModel)]="editingItem.description" 
+          placeholder="Item description"
+          type="text"
+        />
+        <button (click)="saveEdit()" class="save-btn">Save</button>
+        <button (click)="cancelEdit()" class="cancel-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
