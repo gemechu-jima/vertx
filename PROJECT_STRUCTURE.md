@@ -41,7 +41,7 @@ starter/
 ### Backend (Vert.x)
 
 ```bash
-cd /home/hp/Downloads/starter
+cd /home/hp/Downloads/starter/backend
 ./mvnw clean compile exec:java
 ```
 
