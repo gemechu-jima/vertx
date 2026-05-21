@@ -1,10 +1,12 @@
 pipeline {
     agent any
-    
-    environment {
-        MAVEN_HOME = '/usr/share/maven'
-        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
-        NODE_VERSION = '18'
+    tools {
+        maven "M3"     // Matches the Name of Maven configured in Manage Jenkins -> Tools
+        jdk "jdk17"    // Matches the Name of JDK 17 configured in Manage Jenkins -> Tools
+    }
+     environment {
+        // Fallback explicit paths only if you haven't configured Global Tools
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
     }
     
     stages {
