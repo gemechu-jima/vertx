@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         MAVEN_HOME = '/usr/share/maven'
-        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk'
+        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
         NODE_VERSION = '18'
     }
     
