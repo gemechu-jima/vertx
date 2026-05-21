@@ -3,7 +3,6 @@ pipeline {
     
     environment {
         MAVEN_HOME = '/usr/share/maven'
-        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
         NODE_VERSION = '18'
     }
     
@@ -19,7 +18,11 @@ pipeline {
             steps {
                 echo 'Building backend with Maven...'
                 dir('backend') {
-                    sh './mvnw clean compile'
+                    sh '''
+                        export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+                        echo "JAVA_HOME=$JAVA_HOME"
+                        ./mvnw clean compile
+                    '''
                 }
             }
         }
@@ -40,7 +43,11 @@ pipeline {
             steps {
                 echo 'Running backend tests...'
                 dir('backend') {
-                    sh './mvnw test'
+                    sh '''
+                        export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+                        echo "JAVA_HOME=$JAVA_HOME"
+                        ./mvnw test
+                    '''
                 }
             }
             post {
