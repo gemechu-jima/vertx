@@ -28,6 +28,11 @@ pipeline {
         }
         
         stage('Build Frontend') {
+            agent {
+                docker {
+                    image 'node:18'
+                }
+            }
             steps {
                 echo 'Building frontend with Angular CLI...'
                 dir('frontend') {
@@ -58,10 +63,15 @@ pipeline {
         }
         
         stage('Test Frontend') {
+            agent {
+                docker {
+                    image 'node:18'
+                }
+            }
             steps {
                 echo 'Running frontend tests...'
                 dir('frontend') {
-                    sh 'npm run test -- --watch=false'
+                    sh 'npm install && npm run test -- --watch=false'
                 }
             }
         }
