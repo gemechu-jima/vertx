@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: starter-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Xmx512m
+    networks:
+      - starter-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: starter-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - starter-network
+
+networks:
+  starter-network:
+    driver: bridge
