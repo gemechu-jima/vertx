@@ -55,10 +55,10 @@ pipeline {
                 }
             }
             post {
-                always {
-                    junit 'backend/target/surefire-reports/*.xml'
-                }
-            }
+        always {
+            junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+        }
+    }
         }
         
         stage('Test Frontend') {
