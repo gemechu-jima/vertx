@@ -51,7 +51,7 @@ pipeline {
                     sh '''
                         export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
                         echo "JAVA_HOME=$JAVA_HOME"
-                        ./mvnw test
+                        ./mvnw test -DtrimStackTrace=false
                     '''
                 }
             }
