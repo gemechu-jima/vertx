@@ -1,4 +1,4 @@
-process.env.CHROME_BIN = '/snap/bin/chromium';
+
 
 module.exports = function (config) {
   config.set({

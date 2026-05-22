@@ -64,17 +64,13 @@ pipeline {
         stage('Test Frontend') {
             agent {
                 docker {
-                    image 'cypress/browsers:node18.12.0-chrome107'
+                    image 'node:18'
                 }
-            }
-
-            environment {
-                CHROME_BIN = '/usr/bin/google-chrome'
             }
             steps {
                 echo 'Running frontend tests...'
                 dir('frontend') {
-                    sh 'npm test -- --watch=false --browsers=ChromeHeadless'
+                    sh 'npm install && npm run test -- --watch=false --browsers=ChromeHeadless'
                 }
             }
         }
