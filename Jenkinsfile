@@ -27,22 +27,22 @@ pipeline {
             }
         }
         
-        // stage('Build Frontend') {
-        //     agent {
-        //         docker {
-        //             image 'node:18'
-        //         }
-        //     }
-        //     steps {
-        //         echo 'Building frontend with Angular CLI...'
-        //         dir('frontend') {
-        //             sh '''
-        //                 npm install
-        //                 npm run build
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Build Frontend') {
+            agent {
+                docker {
+                    image 'node:18'
+                }
+            }
+            steps {
+                echo 'Building frontend with Angular CLI...'
+                dir('frontend') {
+                    sh '''
+                        npm install
+                        npm run build
+                    '''
+                }
+            }
+        }
         
         // stage('Test Backend') {
         //     steps {
