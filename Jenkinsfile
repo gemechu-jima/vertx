@@ -70,7 +70,7 @@ pipeline {
             steps {
                 echo 'Running frontend tests...'
                 dir('frontend') {
-                    sh 'npm install && npm run test -- --watch=false'
+                    sh 'nnpm install && npm run test -- --watch=false --browsers=ChromeHeadless'
                 }
             }
         }
