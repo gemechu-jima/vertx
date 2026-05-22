@@ -44,23 +44,23 @@ pipeline {
             }
         }
         
-        // stage('Test Backend') {
-        //     steps {
-        //         echo 'Running backend tests...'
-        //         dir('backend') {
-        //             sh '''
-        //                 export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
-        //                 echo "JAVA_HOME=$JAVA_HOME"
-        //                 ./mvnw test
-        //             '''
-        //         }
-        //     }
-        //     post {
-        //         always {
-        //             junit 'backend/target/surefire-reports/*.xml'
-        //         }
-        //     }
-        // }
+        stage('Test Backend') {
+            steps {
+                echo 'Running backend tests...'
+                dir('backend') {
+                    sh '''
+                        export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+                        echo "JAVA_HOME=$JAVA_HOME"
+                        ./mvnw test
+                    '''
+                }
+            }
+            post {
+                always {
+                    junit 'backend/target/surefire-reports/*.xml'
+                }
+            }
+        }
         
         // stage('Test Frontend') {
         //     agent {
