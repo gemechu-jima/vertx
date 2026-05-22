@@ -44,22 +44,22 @@ pipeline {
             }
         }
         
-        stage('Test Backend') {
-            steps {
-                echo 'Running backend tests...'
-                dir('backend') {
-                    sh '''
-                        export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
-                        echo "JAVA_HOME=$JAVA_HOME"
-                    '''
-                }
-            }
-            post {
-        always {
-            junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-        }
-    }
-        }
+        // stage('Test Backend') {
+        //     steps {
+        //         echo 'Running backend tests...'
+        //         dir('backend') {
+        //             sh '''
+        //                 export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+        //                 echo "JAVA_HOME=$JAVA_HOME"
+        //             '''
+        //         }
+        //     }
+        //     post {
+        //         always {
+        //             junit 'backend/target/surefire-reports/*.xml'
+        //         }
+        //     }
+        // }
         
         stage('Test Frontend') {
             agent {
@@ -75,37 +75,37 @@ pipeline {
             }
         }
         
-        // stage('Build Docker Images') {
-        //     steps {
-        //         echo 'Building Docker images...'
-        //         script {
-        //             sh '''
-        //                 # Backend Docker image
-        //                 docker build -f backend/Dockerfile -t starter-backend:latest ./backend
+        stage('Build Docker Images') {
+            steps {
+                echo 'Building Docker images...'
+                script {
+                    sh '''
+                        # Backend Docker image
+                        docker build -f backend/Dockerfile -t starter-backend:latest ./backend
                         
-        //                 # Frontend Docker image
-        //                 docker build -f frontend/Dockerfile -t starter-frontend:latest ./frontend
-        //             '''
-        //         }
-        //     }
-        // }
+                        # Frontend Docker image
+                        docker build -f frontend/Dockerfile -t starter-frontend:latest ./frontend
+                    '''
+                }
+            }
+        }
         
-        // stage('Deploy') {
-        //     when {
-        //         branch 'main'
-        //     }
-        //     steps {
-        //         echo 'Deploying application...'
-        //         script {
-        //             // Configure your deployment steps here
-        //             // Examples:
-        //             // sh 'docker push starter-backend:latest'
-        //             // sh 'docker push starter-frontend:latest'
-        //             // sh 'kubectl apply -f deployment.yaml'
-        //             echo 'Deployment configuration needed - update with your deployment target'
-        //         }
-        //     }
-        // }
+        stage('Deploy') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Deploying application...'
+                script {
+                    // Configure your deployment steps here
+                    // Examples:
+                    // sh 'docker push starter-backend:latest'
+                    // sh 'docker push starter-frontend:latest'
+                    // sh 'kubectl apply -f deployment.yaml'
+                    echo 'Deployment configuration needed - update with your deployment target'
+                }
+            }
+        }
     }
     
     post {
