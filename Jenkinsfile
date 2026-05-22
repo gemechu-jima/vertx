@@ -74,8 +74,7 @@ pipeline {
             steps {
                 echo 'Running frontend tests...'
                 dir('frontend') {
-                    sh 'npm ci
-                       npm test -- --watch=false --browsers=ChromeHeadless'
+                    sh 'npm test -- --watch=false --browsers=ChromeHeadless'
                 }
             }
         }
