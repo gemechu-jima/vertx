@@ -51,7 +51,6 @@ pipeline {
                     sh '''
                         export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
                         echo "JAVA_HOME=$JAVA_HOME"
-                        ./mvnw test -DtrimStackTrace=false
                     '''
                 }
             }
@@ -62,19 +61,19 @@ pipeline {
             }
         }
         
-        // stage('Test Frontend') {
-        //     agent {
-        //         docker {
-        //             image 'node:18'
-        //         }
-        //     }
-        //     steps {
-        //         echo 'Running frontend tests...'
-        //         dir('frontend') {
-        //             sh 'npm install && npm run test -- --watch=false'
-        //         }
-        //     }
-        // }
+        stage('Test Frontend') {
+            agent {
+                docker {
+                    image 'node:18'
+                }
+            }
+            steps {
+                echo 'Running frontend tests...'
+                dir('frontend') {
+                    sh 'npm install && npm run test -- --watch=false'
+                }
+            }
+        }
         
         // stage('Build Docker Images') {
         //     steps {
