@@ -14,7 +14,7 @@ public class MainVerticle extends VerticleBase {
 
   private Map<Integer, JsonObject> items = new HashMap<>();
   private AtomicInteger idCounter = new AtomicInteger(1);
-
+  int port = config().getInteger("port", 8888);
   @Override
   public Future<?> start() {
     addSampleData();
@@ -44,7 +44,7 @@ public class MainVerticle extends VerticleBase {
 
     return vertx.createHttpServer()
       .requestHandler(router)
-      .listen(8888)
+      .listen(port)
       .onSuccess(server -> {
         System.out.println("HTTP server started on port " + server.actualPort());
       });
