@@ -15,11 +15,20 @@ public class LoginHandler {
 
     public void loginUser(RoutingContext ctx) {
 
-        JsonObject requestBody = ctx.body().asJsonObject();
+        ctx.request().bodyHandler(buffer -> {
 
-        if (requestBody == null) {
-            ctx.response().setStatusCode(400)
-                    .end(new JsonObject().put("error", "Invalid JSON").encode());
+        JsonObject requestBody;
+
+        try {
+            requestBody = buffer.toJsonObject();
+            System.out.println("Received login request: " + requestBody.encode());
+
+        } catch (Exception e) {
+            ctx.response()
+                .setStatusCode(400)
+                .end(new JsonObject()
+                    .put("error", "Invalid JSON")
+                    .encode());
             return;
         }
 
@@ -53,38 +62,47 @@ public class LoginHandler {
                             .setStatusCode(500)
                             .end("Database error");
                 });
+        });
     }
 
     public void registerUser(RoutingContext ctx) {
-        JsonObject requestBody = ctx.body().asJsonObject();
+        ctx.request().bodyHandler(buffer -> {
 
-        if (requestBody == null) {
-            ctx.response().setStatusCode(400)
-                    .end(new JsonObject().put("error", "Invalid JSON").encode());
+        JsonObject requestBody;
+
+        try {
+            requestBody = buffer.toJsonObject();
+            System.out.println("Received registration request: " + requestBody.encode());
+
+        } catch (Exception e) {
+            ctx.response()
+                .setStatusCode(400)
+                .end(new JsonObject()
+                    .put("error", "Invalid JSON")
+                    .encode());
             return;
         }
 
-        String username = requestBody.getString("username");
-        String password = requestBody.getString("password");
-
-        if (username == null || password == null) {
+        String username=requestBody.getString("username");
+        String password=requestBody.getString("password");
+        if(username==null || password==null){
             ctx.response().setStatusCode(400)
-                    .end(new JsonObject().put("error", "Missing fields").encode());
-            return;
+            .end(new JsonObject().put("error", "Missing fields")
+            .encode());
         }
-
         client.preparedQuery(
                 "INSERT INTO users (username, password) VALUES (?, ?)")
                 .execute(Tuple.of(username, password))
                 .onSuccess(res -> {
                     ctx.response()
                             .setStatusCode(201)
-                            .end(new JsonObject().put("status", "user created").encode());
+                            .end(new JsonObject().put("status", "registered").encode());
                 })
                 .onFailure(err -> {
                     ctx.response()
                             .setStatusCode(500)
                             .end("Database error");
                 });
+        });
     }
 }

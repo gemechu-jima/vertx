@@ -1,6 +1,8 @@
 pipeline {
     agent any
-    
+    triggger {
+        githubPush()
+    }
     environment {
         MAVEN_HOME = '/usr/share/maven'
         NODE_VERSION = '18'
