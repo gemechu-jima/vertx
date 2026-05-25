@@ -9,19 +9,22 @@ import io.vertx.ext.web.RoutingContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import io.vertx.sqlclient.Pool;
 public class MainVerticle extends VerticleBase {
 
   private Map<Integer, JsonObject> items = new HashMap<>();
   private AtomicInteger idCounter = new AtomicInteger(1);
-  int port = config().getInteger("port", 8888);
+
   @Override
   public Future<?> start() {
     addSampleData();
-    
+    JsonObject config = config(); 
+    int port = config().getInteger("port", 8888);
     Router router = Router.router(vertx);
+    Pool client = DatabaseConfig.getClient(vertx);
+    LoginHandler loginHandler = new LoginHandler(client);
 
-    // Enable CORS for Angular frontend
+        // Enable CORS for Angular frontend
     router.route().handler(ctx -> {
       ctx.response()
         .putHeader("Access-Control-Allow-Origin", "*")
@@ -34,7 +37,15 @@ public class MainVerticle extends VerticleBase {
         ctx.next();
       }
     });
-
+    // Test Database connection
+  client.query("SELECT 1")
+.execute()
+.onSuccess(res -> {
+    System.out.println("MySQL Connected OK");
+})
+.onFailure(err -> {
+    System.out.println("MySQL Failed: " + err.getMessage());
+});
     // CRUD routes
     router.get("/items").handler(this::listItems);
     router.get("/items/:id").handler(this::getItem);
@@ -148,4 +159,8 @@ public class MainVerticle extends VerticleBase {
     items.put(2, new JsonObject().put("id", 2).put("name", "Item 2").put("description", "Second item"));
     idCounter.set(3);
   }
+  public static void main(String[] args) {
+    io.vertx.core.Vertx vertx = io.vertx.core.Vertx.vertx();
+    vertx.deployVerticle(new MainVerticle());
+}
 }
