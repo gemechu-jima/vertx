@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    triggger {
+    triggers {
         githubPush()
     }
     environment {
