@@ -1,0 +1,48 @@
+POST http://localhost:8888/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "gemechu",
+  "password": "1234"
+}
+
+
+###
+
+POST http://localhost:8888/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "password": "password"
+}
+
+
+### This is a test for the items endpoint
+
+GET http://localhost:8888/items HTTP/1.1
+
+### 
+GET http://localhost:8888/items/1 HTTP/1.1
+
+
+### create new Items
+POST http://localhost:8888/items HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "New Item",
+  "description": "This is a new item"
+}
+
+### update an item
+PUT http://localhost:8888/items/4 HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Updated Item",
+  "description": "This item has been updated"
+}
+
+### delete an item
+DELETE http://localhost:8888/items/4 HTTP/1.1

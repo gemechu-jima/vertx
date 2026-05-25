@@ -18,11 +18,10 @@ public class MainVerticle extends VerticleBase {
   @Override
   public Future<?> start() {
     addSampleData();
-    JsonObject config = config(); 
     int port = config().getInteger("port", 8888);
     Router router = Router.router(vertx);
     Pool client = DatabaseConfig.getClient(vertx);
-    LoginHandler loginHandler = new LoginHandler(client);
+    LoginHandler loginUser = new LoginHandler(client);
 
         // Enable CORS for Angular frontend
     router.route().handler(ctx -> {
@@ -46,6 +45,9 @@ public class MainVerticle extends VerticleBase {
 .onFailure(err -> {
     System.out.println("MySQL Failed: " + err.getMessage());
 });
+    // Authentication routes
+    router.post("/login").handler(loginUser::loginUser);
+    router.post("/register").handler(loginUser::registerUser);
     // CRUD routes
     router.get("/items").handler(this::listItems);
     router.get("/items/:id").handler(this::getItem);
