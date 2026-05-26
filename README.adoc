@@ -38,3 +38,7 @@ docker run -d \
   --name jenkins \
   --user root \
   jenkins/jenkins:lts
+
+
+  
+find src/main/java -name "*.java" | entr -r clear && mvn compile exec:java -Dexec.mainClass=com.example.starter.MainVerticle

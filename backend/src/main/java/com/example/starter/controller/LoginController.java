@@ -30,7 +30,6 @@ public class LoginController {
         user.setUsername(body.getString("username"));
         user.setPassword(body.getString("password"));
        
-
         loginService.login(user)
             .onSuccess(result -> {
 
