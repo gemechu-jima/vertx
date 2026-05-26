@@ -1,6 +1,7 @@
 package com.example.starter.controller;
 
 import com.example.starter.service.LoginService;
+import com.example.starter.model.User;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 
@@ -11,7 +12,7 @@ public class LoginController {
     public LoginController(LoginService loginService) {
         this.loginService = loginService;
     }
-
+   
     public void login(RoutingContext ctx) {
 
         JsonObject body = ctx.body().asJsonObject();
@@ -25,11 +26,12 @@ public class LoginController {
 
             return;
         }
+        User user= new User();
+        user.setUsername(body.getString("username"));
+        user.setPassword(body.getString("password"));
+       
 
-        String username = body.getString("username");
-        String password = body.getString("password");
-
-        loginService.login(username, password)
+        loginService.login(user)
             .onSuccess(result -> {
 
                 ctx.response()
@@ -58,7 +60,7 @@ public class LoginController {
         }
         String username = body.getString("username");
         String password = body.getString("password");
-        // Registration logic to be implemented
+  
         loginService.register(username, password)
             .onSuccess(result -> {
                 ctx.response()
@@ -72,5 +74,20 @@ public class LoginController {
                         .put("error", err.getMessage())
                         .encode());
             });
+    }
+    public void getAllUsers(RoutingContext context){
+        loginService.getAllUsers()
+        .onSuccess(result -> {
+            context.response()
+                .putHeader("content-type", "application/json")
+                .end(result.encode());
+        })
+        .onFailure(err -> {
+            context.response()
+                .setStatusCode(500)
+                .end(new JsonObject()
+                    .put("error", err.getMessage())
+                    .encode());
+        });
     }
 }

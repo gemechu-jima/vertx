@@ -6,6 +6,7 @@ import com.example.starter.service.LoginService;
 
 import io.vertx.core.Future;
 import io.vertx.core.VerticleBase;
+import io.vertx.core.Vertx;
 
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -41,6 +42,7 @@ public class MainVerticle extends VerticleBase {
 
         router.post("/login").handler(loginController::login);
         router.post("/register").handler(loginController::register);
+        router.get("/users").handler(loginController::getAllUsers);
 
         // Start server
 
@@ -56,6 +58,8 @@ public class MainVerticle extends VerticleBase {
                 });
     }
     public static void main(String[] args) {
+      Vertx vertx = Vertx.vertx();
+      vertx.deployVerticle(new MainVerticle());
       System.out.println("Starting Vert.x application...");
     }
   }

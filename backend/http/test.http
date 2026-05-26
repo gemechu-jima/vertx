@@ -20,7 +20,7 @@ Content-Type: application/json
 
 ### This is a test for the items endpoint
 
-GET http://localhost:8888/items HTTP/1.1
+GET http://localhost:8888/users HTTP/1.1
 
 ### 
 GET http://localhost:8888/items/1 HTTP/1.1
