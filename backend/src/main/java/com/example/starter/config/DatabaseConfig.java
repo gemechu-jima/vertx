@@ -1,4 +1,4 @@
-package com.example.starter;
+package com.example.starter.config;
 
 import io.vertx.core.Vertx;
 import io.vertx.mysqlclient.MySQLConnectOptions;
