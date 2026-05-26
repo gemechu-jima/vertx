@@ -53,24 +53,35 @@ public class LoginService {
         return promise.future();
     }
 
-    public Future<JsonObject> register(String username, String password) {
-            Promise<JsonObject> promise = Promise.promise();
-            
-            client.preparedQuery(
-                    "INSERT INTO users (username, password) VALUES (?, ?)"
-            )
-            .execute(Tuple.of(username, password))
-            .onSuccess(result -> {
+ public Future<JsonObject> register(String username, String password) {
+    Promise<JsonObject> promise = Promise.promise();
+    
+    // Step 1: Check if the username already exists
+    client.preparedQuery("SELECT id FROM users WHERE username = ?")
+        .execute(Tuple.of(username))
+        .onSuccess(rows -> {
+            if (rows.size() > 0) {
+                // Username is already taken
                 promise.complete(new JsonObject()
-                .put("status", "success")
-                .put("message", "User registered successfully"));
-            })
-            .onFailure(err -> {
-                promise.fail(err.getMessage());
-            });
+                    .put("status", "error")
+                    .put("message", "Username is already taken"));
+            } else {
+                // Step 2: Username is unique, proceed with insertion
+                client.preparedQuery("INSERT INTO users (username, password) VALUES (?, ?)")
+                    .execute(Tuple.of(username, password))
+                    .onSuccess(result -> {
+                        promise.complete(new JsonObject()
+                            .put("status", "success")
+                            .put("message", "User registered successfully"));
+                    })
+                    .onFailure(err -> promise.fail(err.getMessage()));
+            }
+        })
+        .onFailure(err -> promise.fail(err.getMessage()));
 
-        return promise.future();
-    }
+    return promise.future();
+}
+
     public Future<JsonObject> getAllUsers() {
     Promise<JsonObject> promise = Promise.promise();
 
