@@ -1,32 +1,46 @@
-import { Component, Inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserService } from './services/login.service';
 import { HttpClientModule } from '@angular/common/http';
+
+import { UserService } from './services/login.service';
+
 @Component({
   selector: 'app-login',
   standalone: true,
-  providers:[UserService],
-  imports: [ CommonModule, HttpClientModule],
+  providers: [UserService],
+  imports: [CommonModule, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
-  title = 'Login Page';
-  private userService=Inject(UserService)
-  login() {
-    // Implement login logic here
+export class LoginComponent implements OnInit {
+
+  users: any[] = [];
+
+  private userService = inject(UserService);
+  ngOnInit(): void {
+    this.getAllUsers();
   }
-  register() {
-    // Implement registration logic here
-  }
+
   getAllUsers() {
     this.userService.getAllUsers()
-      .subscribe((data: any[]) => {
-
-        console.log(data);
-
+      .subscribe((data: any) => {
+        this.users=data.users;
       });
-
   }
+  editUser(user: any) {
+  console.log("Edit user:", user);
+  // later: open form or modal
+}
 
+deleteUser(user: any) {
+  console.log("Delete user:", user);
+
+  this.userService.deleteUser(user.id).subscribe({
+    next: () => {
+      this.users = this.users.filter(u => u.id !== user.id);
+    },
+    error: (err) => console.log(err)
+  });
+}
+ onSubmit() {}
 }

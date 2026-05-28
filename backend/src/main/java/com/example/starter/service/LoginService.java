@@ -91,7 +91,6 @@ public class LoginService {
         .onSuccess(rows -> {
             // Convert RowSet into a valid JsonArray
             JsonArray usersArray = rowsToJsonArray(rows); 
-
             JsonObject response = new JsonObject()
                 .put("status", "success")
                 .put("users", usersArray); // Pass the JSON array here
@@ -115,4 +114,25 @@ private JsonArray rowsToJsonArray(RowSet<Row> rowSet) {
         }
         return array;
     }
+
+public Future<JsonObject> deleteUser(int userId) {
+    Promise<JsonObject> promise = Promise.promise();
+
+    client.preparedQuery("DELETE FROM users WHERE id = ?")
+        .execute(Tuple.of(userId))
+        .onSuccess(result -> {
+            if (result.rowCount() > 0) {
+                promise.complete(new JsonObject()
+                    .put("status", "success")
+                    .put("message", "User deleted successfully"));
+            } else {
+                promise.complete(new JsonObject()
+                    .put("status", "error")
+                    .put("message", "User not found"));
+            }
+        })
+        .onFailure(err -> promise.fail(err.getMessage()));
+
+    return promise.future();
+}
 }

@@ -89,4 +89,42 @@ public class LoginController {
                     .encode());
         });
     }
+    public void deleteUser(RoutingContext context){
+        String userIdParam = context.pathParam("id");
+        if (userIdParam == null) {
+            context.response()
+                .setStatusCode(400)
+                .end(new JsonObject()
+                    .put("error", "User ID is required")
+                    .encode());
+            return;
+        }
+        int userId;
+        try {
+            userId = Integer.parseInt(userIdParam);
+        } catch (NumberFormatException e) {
+            context.response()
+                .setStatusCode(400)
+                .end(new JsonObject()
+                    .put("error", "Invalid User ID format")
+                    .encode());
+            return;
+        }
+        loginService.deleteUser(userId)
+            .onSuccess(v -> {
+                context.response()
+                    .putHeader("content-type", "application/json")
+                    .end(new JsonObject()
+                        .put("status", "success")
+                        .put("message", "User deleted successfully")
+                        .encode());
+            })
+            .onFailure(err -> {
+                context.response()
+                    .setStatusCode(500)
+                    .end(new JsonObject()
+                        .put("error", err.getMessage())
+                        .encode());
+            });
+    }
 }

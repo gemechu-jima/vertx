@@ -6,10 +6,10 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './home.component.html',
-  styles:"./home.component.css"
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-
+   title = 'Home Page';
   newItem = {
     name: '',
     description: ''
