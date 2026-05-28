@@ -1,5 +1,6 @@
 package com.example.starter.service;
 import com.example.starter.model.User;
+
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.json.JsonArray;

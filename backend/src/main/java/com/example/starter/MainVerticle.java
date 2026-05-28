@@ -8,6 +8,9 @@ import io.vertx.core.Future;
 import io.vertx.core.VerticleBase;
 import io.vertx.core.Vertx;
 
+import io.vertx.ext.web.handler.CorsHandler;
+import io.vertx.core.http.HttpMethod;
+
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 
@@ -38,8 +41,19 @@ public class MainVerticle extends VerticleBase {
 
         router.route().handler(BodyHandler.create());
 
+        // add Cors 
+        router.route().handler(
+          CorsHandler.create("*")
+          .allowedMethod(HttpMethod.POST)
+          .allowedMethod(HttpMethod.GET)
+          .allowedMethod(HttpMethod.PUT)
+          .allowedMethod(HttpMethod.PATCH)
+          .allowedMethod(HttpMethod.DELETE)
+          .allowedHeader("Content-Type")
+          .allowedHeader("Authorization")
+        );
         // Routes
-
+ 
         router.post("/login").handler(loginController::login);
         router.post("/register").handler(loginController::register);
         router.get("/users").handler(loginController::getAllUsers);

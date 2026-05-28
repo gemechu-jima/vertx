@@ -2,9 +2,9 @@ package com.example.starter.config;
 
 import io.vertx.core.Vertx;
 import io.vertx.mysqlclient.MySQLConnectOptions;
+import io.vertx.mysqlclient.MySQLBuilder;
 import io.vertx.sqlclient.Pool;
 import io.vertx.sqlclient.PoolOptions;
-import io.vertx.mysqlclient.MySQLBuilder;
 
 public class DatabaseConfig {
 

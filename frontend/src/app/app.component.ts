@@ -2,12 +2,14 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { RouterOutlet } from '@angular/router';
 import { ItemService } from './services/item.service';
+import { HeaderComponent } from './header/header.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [RouterOutlet, CommonModule, FormsModule, HttpClientModule, HeaderComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -18,23 +20,7 @@ export class AppComponent {
   editingItem: any = null;
   loading = false;
 
-  constructor(private itemService: ItemService) {
-    this.loadItems();
-  }
-
-  loadItems() {
-    this.loading = true;
-    this.itemService.getItems().subscribe({
-      next: (data) => {
-        this.items = data;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading items', err);
-        this.loading = false;
-      }
-    });
-  }
+  constructor(private itemService: ItemService) {}
 
   addItem() {
     if (!this.newItem.name.trim()) {

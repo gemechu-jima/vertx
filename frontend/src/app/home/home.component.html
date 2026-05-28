@@ -1,0 +1,21 @@
+<div class="container">
+  <app-header></app-header>
+  <h1>{{ title }}</h1>
+
+  <div class="add-item-form">
+    <h2>Add New Item</h2>
+    <input 
+      [(ngModel)]="newItem.name" 
+      placeholder="Item name" 
+      type="text"
+    />
+    <input 
+      [(ngModel)]="newItem.description" 
+      placeholder="Item description" 
+      type="text"
+    />
+    <button (click)="addItem()">Add Item</button>
+  </div>
+
+  
+</div>
