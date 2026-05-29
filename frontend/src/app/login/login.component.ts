@@ -3,19 +3,21 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
 import { UserService } from './services/login.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   providers: [UserService],
-  imports: [CommonModule, HttpClientModule],
+  imports: [FormsModule, CommonModule, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit {
 
   users: any[] = [];
-
+  username: string = '';
+  password: string = '';
   private userService = inject(UserService);
   ngOnInit(): void {
     this.getAllUsers();
@@ -42,5 +44,16 @@ deleteUser(user: any) {
     error: (err) => console.log(err)
   });
 }
- onSubmit() {}
+ login() {
+  this.userService.login(this.username, this.password).subscribe({
+    next: (response) => console.log('Login successful:', response),
+    error: (err) => console.log('Login failed:', err)
+  })
+ }
+ register() {
+  this.userService.register(this.username, this.password).subscribe({
+    next: (response) => console.log('Registration successful:', response),
+    error: (err) => console.log('Registration failed:', err)
+  })
+ }
 }

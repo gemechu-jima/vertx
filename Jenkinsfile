@@ -9,6 +9,11 @@ pipeline {
     }
     
     stages {
+                stage('Clean') {
+            steps {
+                sh 'rm -rf node_modules package-lock.json'
+            }
+        }
         stage('Checkout') {
             steps {
                 echo 'Checking out code...'

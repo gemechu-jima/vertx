@@ -1,29 +1,30 @@
 <div>
-    <h2>Login</h2>
-    <form (ngSubmit)="onSubmit()">
-        <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username"  name="username" required>
-        </div>
-        <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password"  name="password" required>
-        </div>
-        <button type="submit">Login</button>
-    </form>
-    <!-- list the users -->
-<div class="user-list">
-  <div class="user-card" *ngFor="let user of users">
-    
-    <div class="user-info">
-      <p class="username">{{ user.username }}</p>
+  <h2>Login</h2>
+  <form>
+    <div>
+      <label for="username">Username:</label>
+      <input type="text" id="username" [(ngModel)]="username" name="username" required>
     </div>
-
-    <div class="actions">
-      <button class="edit-btn" (click)="editUser(user)">Edit</button>
-      <button class="delete-btn" (click)="deleteUser(user)">Delete</button>
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" [(ngModel)]="password" required>
     </div>
+    <button type="button" (click)="login()">Login</button>
+    <button type="button" (click)="register()">Register</button>
+  </form>
+  <!-- list the users -->
+  <div class="user-list">
+    <div class="user-card" *ngFor="let user of users">
 
+      <div class="user-info">
+        <p class="username">{{ user.username }}</p>
+      </div>
+
+      <div class="actions">
+        <button class="edit-btn" (click)="editUser(user)">Edit</button>
+        <button class="delete-btn" (click)="deleteUser(user)">Delete</button>
+      </div>
+
+    </div>
   </div>
-</div>
 </div>
